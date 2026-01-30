@@ -42,14 +42,14 @@ export function useChat() {
       {
         id: generateUUID(),
         role: 'assistant',
-        content: `Welcome to LlamaIndex Q&A Assistant! I can help you with:
+        content: `Hello! I'm your RAG-powered assistant. I can help you find information from your documents.
 
-• **Features** - Data connectors, indexes, query engines, chat engines
-• **Installation** - pip commands, setup, configuration
-• **Integrations** - LLM providers, vector stores, embeddings
-• **Troubleshooting** - Common issues and solutions
+**What I can do:**
+- Answer questions based on your knowledge base
+- Provide accurate, context-aware responses
+- Remember our conversation for follow-up questions
 
-Ask me anything about LlamaIndex, or click a sample question below!`,
+Ask me anything, or try one of the sample questions below!`,
         timestamp: new Date(),
       },
     ]);
@@ -147,7 +147,7 @@ Ask me anything about LlamaIndex, or click a sample question below!`,
         {
           id: generateUUID(),
           role: 'assistant',
-          content: 'Conversation cleared. How can I help you with LlamaIndex?',
+          content: 'Conversation cleared. How can I help you?',
           timestamp: new Date(),
         },
       ]);

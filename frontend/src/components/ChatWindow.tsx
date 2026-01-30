@@ -1,11 +1,5 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Trash2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
@@ -20,10 +14,9 @@ export function ChatWindow() {
   const scrollDebounceRef = useRef<number | null>(null);
   const [userScrolledUp, setUserScrolledUp] = useState(false);
 
-  const SCROLL_DEBOUNCE = 200; // ms between scroll updates
-  const SCROLL_THRESHOLD = 100; // px from bottom to consider "near bottom"
+  const SCROLL_DEBOUNCE = 200;
+  const SCROLL_THRESHOLD = 100;
 
-  // Check if user is near the bottom of the scroll container
   const isNearBottom = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container) return true;
@@ -31,20 +24,16 @@ export function ChatWindow() {
     return scrollHeight - scrollTop - clientHeight < SCROLL_THRESHOLD;
   }, []);
 
-  // Handle user scroll to detect when they've scrolled up
   const handleScroll = useCallback(() => {
     setUserScrolledUp(!isNearBottom());
   }, [isNearBottom]);
 
-  // Debounced auto-scroll to bottom
   useEffect(() => {
-    // Don't scroll if user has scrolled up
     if (userScrolledUp) return;
 
     const now = performance.now();
     const timeSinceLastScroll = now - lastScrollTime.current;
 
-    // Debounce scroll updates
     if (timeSinceLastScroll < SCROLL_DEBOUNCE) {
       if (scrollDebounceRef.current === null) {
         scrollDebounceRef.current = window.setTimeout(() => {
@@ -64,14 +53,12 @@ export function ChatWindow() {
     }
   }, [messages, userScrolledUp]);
 
-  // Reset userScrolledUp when a new message is sent (user sends message)
   useEffect(() => {
     if (isLoading) {
       setUserScrolledUp(false);
     }
   }, [isLoading]);
 
-  // Cleanup debounce timeout on unmount
   useEffect(() => {
     return () => {
       if (scrollDebounceRef.current !== null) {
@@ -80,45 +67,54 @@ export function ChatWindow() {
     };
   }, []);
 
-  // Show sample questions only when there's just the welcome message
   const showSampleQuestions = messages.length <= 1;
 
   return (
-    <Card className="w-full max-w-4xl h-[calc(100vh-2rem)] flex flex-col shadow-xl">
-      <CardHeader className="flex flex-row items-center justify-between border-b py-4 px-6">
-        <CardTitle className="text-xl font-semibold">LlamaIndex Q&A Assistant</CardTitle>
-        <Button variant="outline" size="sm" onClick={clear}>
-          Clear Chat
+    <div className="w-full max-w-4xl h-[calc(100vh-2rem)] flex flex-col bg-card rounded-2xl shadow-2xl border overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <Sparkles className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-lg font-semibold">RAG Chat Assistant</h1>
+            <p className="text-xs text-muted-foreground">Powered by LlamaIndex</p>
+          </div>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clear}
+          className="text-muted-foreground hover:text-destructive"
+        >
+          <Trash2 className="h-4 w-4 mr-2" />
+          Clear
         </Button>
-      </CardHeader>
+      </div>
 
-      <CardContent className="flex-1 p-0 overflow-hidden">
+      {/* Messages */}
+      <div className="flex-1 overflow-hidden">
         <div
           ref={scrollContainerRef}
           className="h-full overflow-y-auto"
           onScroll={handleScroll}
         >
-          <div className="flex flex-col">
+          <div className="flex flex-col py-4">
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
             ))}
 
             {isLoading && messages[messages.length - 1]?.content === '' && (
-              <div className="flex gap-3 p-4 px-6">
-                <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-xs font-medium shrink-0">
-                  AI
+              <div className="flex gap-3 px-6 py-4">
+                <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <Sparkles className="h-4 w-4 text-primary" />
                 </div>
-                <div className="bg-muted rounded-lg px-4 py-2">
-                  <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" />
-                    <span
-                      className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"
-                      style={{ animationDelay: '0.1s' }}
-                    />
-                    <span
-                      className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"
-                      style={{ animationDelay: '0.2s' }}
-                    />
+                <div className="bg-muted rounded-2xl px-4 py-3">
+                  <div className="flex gap-1.5">
+                    <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" />
+                    <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce [animation-delay:0.1s]" />
+                    <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce [animation-delay:0.2s]" />
                   </div>
                 </div>
               </div>
@@ -127,17 +123,19 @@ export function ChatWindow() {
             <div ref={scrollRef} />
           </div>
         </div>
-      </CardContent>
+      </div>
 
+      {/* Sample Questions */}
       {showSampleQuestions && (
-        <div className="border-t px-2">
+        <div className="border-t bg-muted/30 px-4 py-3">
           <SampleQuestions onSelect={send} disabled={isLoading} />
         </div>
       )}
 
-      <CardFooter className="p-0 border-t">
+      {/* Input */}
+      <div className="border-t bg-background/50 backdrop-blur">
         <ChatInput onSend={send} isLoading={isLoading} />
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }
