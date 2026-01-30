@@ -6,25 +6,27 @@
 
 ## Planned Features
 
-### LLM Provider Support
-- [ ] Azure OpenAI integration
-- [ ] Ollama (local LLMs) support
-- [ ] Anthropic Claude support
+### LLM Provider Support (env: `LLM_PROVIDER`)
+- [x] Azure OpenAI integration ✅
+- [x] Ollama (local LLMs) support ✅
+- [x] Anthropic Claude support ✅
+- [x] OpenAI support ✅
 - [ ] Google Gemini support
 - [ ] Configurable model selection via UI
 
-### Vector Database Support
+### Vector Database Support (env: `VECTOR_DB_PROVIDER`)
+- [x] MongoDB Atlas Vector Search ✅
 - [ ] Weaviate integration
-- [ ] MongoDB Atlas Vector Search
 - [ ] Pinecone integration
 - [ ] Qdrant integration
-- [ ] Configurable vector DB via environment
+
+### Search & Retrieval (env: `ENABLE_HYBRID_SEARCH`)
+- [x] Hybrid search (semantic + keyword) ✅
+- [ ] Re-ranking for improved relevance
+- [ ] Source citations with document references
 
 ### Core Functionality
 - [ ] Agent-based chat with tool calling capabilities
-- [ ] Source citations with document references
-- [ ] Hybrid search (semantic + keyword)
-- [ ] Re-ranking for improved relevance
 - [ ] Configurable chunking strategies
 - [ ] Conversation export (JSON, Markdown)
 - [ ] Search within chat history
@@ -91,11 +93,10 @@
 - [ ] Debug mode with retrieval visualization
 
 ### DevOps & Infrastructure
-- [ ] Docker containerization
-- [ ] Docker Compose setup
+- [x] Docker containerization ✅
+- [x] Docker Compose setup ✅
+- [x] Health checks ✅
 - [ ] CI/CD pipeline (GitHub Actions)
-- [ ] Environment-based configuration
-- [ ] Health check improvements
 - [ ] Kubernetes manifests (optional)
 
 ### Documentation
@@ -112,6 +113,11 @@
 - [x] React frontend with Tailwind CSS
 - [x] Streaming responses with word-by-word display
 - [x] Makefile automation
+- [x] Multi-provider LLM support (Anthropic, OpenAI, Azure, Ollama)
+- [x] MongoDB Atlas Vector Search integration
+- [x] Hybrid search (vector + BM25 keyword)
+- [x] Environment-based configuration
+- [x] Docker + Docker Compose deployment
 
 ## Ideas (Backlog)
 

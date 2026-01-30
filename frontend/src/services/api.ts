@@ -1,4 +1,5 @@
-const API_BASE_URL = 'http://localhost:8000/api';
+// Use relative URL in production (Docker), absolute in development
+const API_BASE_URL = import.meta.env.PROD ? '/api' : 'http://localhost:8000/api';
 
 export interface ChatResponse {
   response: string;

@@ -15,10 +15,10 @@ A Retrieval-Augmented Generation (RAG) chatbot with session-based context memory
 
 | Layer | Technology |
 |-------|------------|
-| LLM | OpenAI GPT-4o-mini (configurable) |
-| Embeddings | OpenAI text-embedding-3-small |
+| LLM | Anthropic Claude (configurable: OpenAI, Azure, Ollama) |
+| Embeddings | HuggingFace BGE (free, runs locally) |
 | RAG Framework | LlamaIndex |
-| Vector DB | ChromaDB |
+| Vector DB | ChromaDB (configurable: MongoDB Atlas) |
 | Backend | Python, FastAPI |
 | Frontend | React, Vite, TypeScript, Tailwind CSS |
 
@@ -28,7 +28,7 @@ A Retrieval-Augmented Generation (RAG) chatbot with session-based context memory
 
 - Python 3.9+
 - Node.js 18+
-- OpenAI API key
+- API key for your chosen LLM provider (Anthropic, OpenAI, Azure, or Ollama)
 
 ### 1. Clone the Repository
 
@@ -43,10 +43,20 @@ cd chat_llamaindex
 cp backend/.env.sample backend/.env
 ```
 
-Edit `backend/.env` and add your OpenAI API key:
+Edit `backend/.env` and configure your LLM provider:
 
-```
-OPENAI_API_KEY=your-api-key-here
+```bash
+# Default: Anthropic Claude
+LLM_PROVIDER=anthropic
+ANTHROPIC_API_KEY=your-api-key-here
+
+# Or use OpenAI
+# LLM_PROVIDER=openai
+# OPENAI_API_KEY=your-api-key-here
+
+# Or use Ollama (local, no API key needed)
+# LLM_PROVIDER=ollama
+# OLLAMA_MODEL=llama3
 ```
 
 ### 3. Install & Run
@@ -87,19 +97,25 @@ chat_llamaindex/
 ├── backend/
 │   ├── main.py              # Application entry point
 │   ├── requirements.txt     # Python dependencies
+│   ├── Dockerfile           # Backend container
 │   ├── .env.sample          # Environment template
 │   ├── sample_data/         # Documents for indexing
 │   └── src/
-│       ├── config.py        # Configuration settings
-│       ├── indexer.py       # Document indexing logic
-│       ├── chatbot.py       # Chat engine with memory
+│       ├── config.py        # Multi-provider configuration
+│       ├── indexer.py       # Document indexing (Chroma/MongoDB)
+│       ├── chatbot.py       # Chat engine with hybrid search
 │       └── api.py           # FastAPI routes
 ├── frontend/
+│   ├── Dockerfile           # Frontend container
+│   ├── nginx.conf           # Production nginx config
 │   └── src/
 │       ├── components/      # React components
 │       ├── hooks/           # Custom React hooks
 │       └── services/        # API client
+├── docker-compose.yml       # Container orchestration
+├── .env.docker              # Docker environment template
 ├── Makefile                 # Build automation
+├── TODO.md                  # Project roadmap
 └── README.md
 ```
 
@@ -123,7 +139,45 @@ make index
 
 Supported formats: `.txt`, `.pdf`, `.md`
 
-## Makefile Commands
+## Docker Deployment
+
+### Quick Start with Docker
+
+```bash
+# Copy environment template
+cp .env.docker .env
+
+# Edit .env with your API keys
+nano .env
+
+# Start the application
+make docker-up
+```
+
+Access the app at http://localhost
+
+### Docker Commands
+
+| Command | Description |
+|---------|-------------|
+| `make docker-build` | Build Docker images |
+| `make docker-up` | Start containers (detached) |
+| `make docker-down` | Stop containers |
+| `make docker-logs` | View container logs |
+| `make docker-clean` | Remove containers and volumes |
+
+### Using Ollama with Docker
+
+When running in Docker, Ollama connects to the host machine:
+
+```bash
+# In .env
+LLM_PROVIDER=ollama
+OLLAMA_BASE_URL=http://host.docker.internal:11434
+OLLAMA_MODEL=llama3
+```
+
+## Local Development Commands
 
 | Command | Description |
 |---------|-------------|
@@ -136,39 +190,46 @@ Supported formats: `.txt`, `.pdf`, `.md`
 
 ## Configuration
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `OPENAI_API_KEY` | Yes | OpenAI API key |
+### LLM Providers
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `LLM_PROVIDER` | No | `anthropic` | Provider: `anthropic`, `openai`, `azure`, `ollama` |
+| `ANTHROPIC_API_KEY` | If Anthropic | - | Anthropic API key |
+| `OPENAI_API_KEY` | If OpenAI | - | OpenAI API key |
+| `AZURE_OPENAI_ENDPOINT` | If Azure | - | Azure OpenAI endpoint URL |
+| `AZURE_OPENAI_API_KEY` | If Azure | - | Azure OpenAI API key |
+| `AZURE_OPENAI_DEPLOYMENT` | If Azure | - | Azure deployment name |
+| `OLLAMA_BASE_URL` | If Ollama | `http://localhost:11434` | Ollama server URL |
+| `OLLAMA_MODEL` | If Ollama | `llama3` | Ollama model name |
+
+### Vector Database & Search
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `VECTOR_DB_PROVIDER` | No | `chroma` | Vector DB: `chroma`, `mongodb` |
+| `MONGODB_URI` | If MongoDB | - | MongoDB Atlas connection string |
+| `MONGODB_DB_NAME` | If MongoDB | `rag_chat` | MongoDB database name |
+| `ENABLE_HYBRID_SEARCH` | No | `false` | Enable semantic + keyword search |
 
 ## Roadmap
 
-See [TODO.md](TODO.md) for the full roadmap. Key planned features:
+See [TODO.md](TODO.md) for the full roadmap.
 
-**LLM Providers**
-- [ ] Azure OpenAI
-- [ ] Ollama (local LLMs)
-- [ ] Anthropic Claude
-- [ ] Google Gemini
+**Completed**
+- [x] Azure OpenAI, OpenAI, Anthropic, Ollama support
+- [x] MongoDB Atlas Vector Search
+- [x] Hybrid search (semantic + keyword)
+- [x] Environment-based provider configuration
+- [x] Docker + Docker Compose deployment
 
-**Vector Databases**
-- [ ] Weaviate
-- [ ] MongoDB Atlas Vector Search
-- [ ] Pinecone
-- [ ] Qdrant
-
-**Data Ingestion**
-- [ ] PDF, Word, Excel, PowerPoint support
-- [ ] Web crawler / Sitemap ingestion
-- [ ] GitHub, Notion, Confluence connectors
-- [ ] S3 / Azure Blob / GCS integration
-- [ ] Incremental updates
-
-**Core Features**
+**Planned**
+- [ ] Weaviate, Pinecone, Qdrant vector stores
+- [ ] Google Gemini support
+- [ ] Data ingestion (PDF, Word, web crawler)
 - [ ] Agent-based chat with tools
 - [ ] Source citations
-- [ ] Hybrid search (semantic + keyword)
-- [ ] Document upload via UI
-- [ ] Docker deployment
+- [ ] CI/CD pipeline
 
 ## Contributing
 

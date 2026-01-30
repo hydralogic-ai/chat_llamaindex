@@ -1,30 +1,40 @@
-.PHONY: help install install-backend install-frontend run run-backend run-frontend dev clean index
+.PHONY: help install install-backend install-frontend run run-backend run-frontend dev clean index docker-build docker-up docker-down docker-logs docker-clean
 
 # Default target
 help:
-	@echo "Q&A Bot - Available Commands"
-	@echo "============================="
+	@echo "RAG Chat - Available Commands"
+	@echo "=============================="
 	@echo ""
-	@echo "Setup:"
+	@echo "Local Development:"
 	@echo "  make install          - Install all dependencies (backend + frontend)"
 	@echo "  make install-backend  - Install backend dependencies only"
 	@echo "  make install-frontend - Install frontend dependencies only"
-	@echo ""
-	@echo "Run:"
 	@echo "  make run              - Run both backend and frontend"
 	@echo "  make run-backend      - Run backend server only"
 	@echo "  make run-frontend     - Run frontend dev server only"
-	@echo "  make dev              - Run both in development mode"
-	@echo ""
-	@echo "Utilities:"
 	@echo "  make index            - Re-index documents in sample_data"
 	@echo "  make clean            - Remove virtual env and node_modules"
 	@echo ""
-	@echo "Setup Steps:"
+	@echo "Docker:"
+	@echo "  make docker-build     - Build Docker images"
+	@echo "  make docker-up        - Start containers (detached)"
+	@echo "  make docker-down      - Stop containers"
+	@echo "  make docker-logs      - View container logs"
+	@echo "  make docker-clean     - Remove containers and volumes"
+	@echo ""
+	@echo "Quick Start (Local):"
 	@echo "  1. cp backend/.env.sample backend/.env"
-	@echo "  2. Edit backend/.env and add your OPENAI_API_KEY"
-	@echo "  3. make install"
-	@echo "  4. make run"
+	@echo "  2. Edit backend/.env with your API keys"
+	@echo "  3. make install && make run"
+	@echo ""
+	@echo "Quick Start (Docker):"
+	@echo "  1. cp .env.docker .env"
+	@echo "  2. Edit .env with your API keys"
+	@echo "  3. make docker-up"
+
+# ===========================================
+# Local Development
+# ===========================================
 
 # Install all dependencies
 install: install-backend install-frontend
@@ -55,7 +65,7 @@ run-frontend:
 
 # Run both (backend in background)
 run:
-	@echo "Starting Q&A Bot..."
+	@echo "Starting RAG Chat..."
 	@echo "Backend: http://localhost:8000"
 	@echo "Frontend: http://localhost:5173"
 	@echo ""
@@ -70,7 +80,7 @@ index:
 	@echo "Re-indexing documents..."
 	cd backend && . venv/bin/activate && python -c "from src.indexer import load_and_index_documents; idx, count = load_and_index_documents(); print(f'Indexed {count} documents')"
 
-# Clean up
+# Clean up local files
 clean:
 	@echo "Cleaning up..."
 	rm -rf backend/venv
@@ -78,3 +88,38 @@ clean:
 	rm -rf frontend/node_modules
 	rm -rf frontend/dist
 	@echo "Clean complete!"
+
+# ===========================================
+# Docker
+# ===========================================
+
+# Build Docker images
+docker-build:
+	@echo "Building Docker images..."
+	docker compose build
+
+# Start containers
+docker-up:
+	@echo "Starting containers..."
+	docker compose up -d
+	@echo ""
+	@echo "RAG Chat is running!"
+	@echo "Frontend: http://localhost"
+	@echo "API: http://localhost:8000"
+	@echo ""
+	@echo "View logs: make docker-logs"
+
+# Stop containers
+docker-down:
+	@echo "Stopping containers..."
+	docker compose down
+
+# View logs
+docker-logs:
+	docker compose logs -f
+
+# Clean Docker resources
+docker-clean:
+	@echo "Removing containers and volumes..."
+	docker compose down -v --rmi local
+	@echo "Docker cleanup complete!"
