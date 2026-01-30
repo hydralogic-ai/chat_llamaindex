@@ -6,6 +6,7 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  isStreaming?: boolean;
 }
 
 function generateUUID(): string {
@@ -33,7 +34,7 @@ export function useChat() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sessionId] = useState<string>(getOrCreateSessionId);
-  const streamingMessageId = useRef<string | null>(null);
+  const streamingContentRef = useRef<string>('');
 
   // Add welcome message on mount
   useEffect(() => {
@@ -70,13 +71,14 @@ Ask me anything about LlamaIndex, or click a sample question below!`,
 
       // Create placeholder for streaming response
       const assistantMessageId = generateUUID();
-      streamingMessageId.current = assistantMessageId;
+      streamingContentRef.current = '';
 
       const assistantMessage: Message = {
         id: assistantMessageId,
         role: 'assistant',
         content: '',
         timestamp: new Date(),
+        isStreaming: true,
       };
 
       setMessages((prev) => [...prev, userMessage, assistantMessage]);
@@ -86,19 +88,26 @@ Ask me anything about LlamaIndex, or click a sample question below!`,
         await sendMessageStream(
           sessionId,
           content.trim(),
-          // onChunk - append to the streaming message
+          // onChunk - append each chunk directly
           (chunk: string) => {
+            streamingContentRef.current += chunk;
             setMessages((prev) =>
               prev.map((msg) =>
                 msg.id === assistantMessageId
-                  ? { ...msg, content: msg.content + chunk }
+                  ? { ...msg, content: streamingContentRef.current }
                   : msg
               )
             );
           },
-          // onDone
+          // onDone - mark streaming complete
           () => {
-            streamingMessageId.current = null;
+            setMessages((prev) =>
+              prev.map((msg) =>
+                msg.id === assistantMessageId
+                  ? { ...msg, isStreaming: false }
+                  : msg
+              )
+            );
             setIsLoading(false);
           },
           // onError
@@ -107,11 +116,10 @@ Ask me anything about LlamaIndex, or click a sample question below!`,
             setMessages((prev) =>
               prev.map((msg) =>
                 msg.id === assistantMessageId
-                  ? { ...msg, content: `Sorry, I encountered an error: ${errorMsg}` }
+                  ? { ...msg, content: `Sorry, I encountered an error: ${errorMsg}`, isStreaming: false }
                   : msg
               )
             );
-            streamingMessageId.current = null;
             setIsLoading(false);
           }
         );
@@ -122,11 +130,10 @@ Ask me anything about LlamaIndex, or click a sample question below!`,
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === assistantMessageId
-              ? { ...msg, content: `Sorry, I encountered an error: ${errorMessage}. Please try again.` }
+              ? { ...msg, content: `Sorry, I encountered an error: ${errorMessage}. Please try again.`, isStreaming: false }
               : msg
           )
         );
-        streamingMessageId.current = null;
         setIsLoading(false);
       }
     },

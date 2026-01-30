@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { StreamingText } from './StreamingText';
 import type { Message } from '@/hooks/useChat';
 import { cn } from '@/lib/utils';
 
@@ -34,7 +35,13 @@ export function ChatMessage({ message }: ChatMessageProps) {
             : 'bg-muted text-foreground'
         )}
       >
-        <div className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</div>
+        <div className="text-sm leading-relaxed">
+          {isUser ? (
+            <span className="whitespace-pre-wrap">{message.content}</span>
+          ) : (
+            <StreamingText content={message.content} isStreaming={message.isStreaming} />
+          )}
+        </div>
         <span
           className={cn(
             'text-xs mt-2 block opacity-60'
