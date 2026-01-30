@@ -140,9 +140,39 @@ Supported formats: `.txt`, `.pdf`, `.md`
 |----------|----------|-------------|
 | `OPENAI_API_KEY` | Yes | OpenAI API key |
 
+## Roadmap
+
+See [TODO.md](TODO.md) for the full roadmap. Key planned features:
+
+**LLM Providers**
+- [ ] Azure OpenAI
+- [ ] Ollama (local LLMs)
+- [ ] Anthropic Claude
+- [ ] Google Gemini
+
+**Vector Databases**
+- [ ] Weaviate
+- [ ] MongoDB Atlas Vector Search
+- [ ] Pinecone
+- [ ] Qdrant
+
+**Data Ingestion**
+- [ ] PDF, Word, Excel, PowerPoint support
+- [ ] Web crawler / Sitemap ingestion
+- [ ] GitHub, Notion, Confluence connectors
+- [ ] S3 / Azure Blob / GCS integration
+- [ ] Incremental updates
+
+**Core Features**
+- [ ] Agent-based chat with tools
+- [ ] Source citations
+- [ ] Hybrid search (semantic + keyword)
+- [ ] Document upload via UI
+- [ ] Docker deployment
+
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel free to submit a Pull Request. Check [TODO.md](TODO.md) for areas where help is needed.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
