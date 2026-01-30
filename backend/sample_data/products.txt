@@ -1,0 +1,71 @@
+LlamaIndex Products and Components
+
+CORE COMPONENTS
+
+1. LlamaIndex Core (llama-index-core)
+   - The foundation of LlamaIndex
+   - Contains base classes, interfaces, and utilities
+   - Required for all LlamaIndex applications
+   - License: MIT (free and open source)
+   - GitHub: github.com/run-llama/llama_index
+
+2. Data Connectors (LlamaHub)
+   - Over 160+ data loaders available
+   - Load from: PDFs, Word docs, Notion, Slack, Discord, databases
+   - Website: llamahub.ai
+   - All connectors are free and community-maintained
+
+LLM INTEGRATIONS
+
+3. llama-index-llms-openai
+   - Integration with OpenAI models
+   - Supports GPT-4, GPT-4-turbo, GPT-3.5-turbo
+   - Pricing: Based on OpenAI API rates
+
+4. llama-index-llms-anthropic
+   - Integration with Anthropic Claude models
+   - Supports Claude 3 Opus, Sonnet, and Haiku
+   - Pricing: Based on Anthropic API rates
+   - Claude 3 Haiku: $0.25/1M input tokens, $1.25/1M output tokens
+
+5. llama-index-llms-huggingface
+   - Run open-source models locally
+   - Supports Llama 2, Mistral, and more
+   - Cost: Free (runs on your hardware)
+
+VECTOR STORE INTEGRATIONS
+
+6. llama-index-vector-stores-chroma
+   - ChromaDB integration for vector storage
+   - Supports persistent and in-memory storage
+   - Cost: Free (open source)
+
+7. llama-index-vector-stores-pinecone
+   - Pinecone cloud vector database
+   - Managed, scalable solution
+   - Pricing: Free tier available, paid plans from $70/month
+
+LLAMACLOUD (Enterprise)
+
+8. LlamaCloud
+   - Managed parsing and indexing service
+   - LlamaParse for document parsing
+   - Pricing:
+     - Free: 1,000 pages/day
+     - Starter: $29/month for 10,000 pages
+     - Enterprise: Custom pricing
+   - Website: cloud.llamaindex.ai
+
+DEVELOPMENT TOOLS
+
+9. create-llama
+   - CLI tool to scaffold LlamaIndex projects
+   - Supports TypeScript and Python
+   - Command: npx create-llama@latest
+   - Cost: Free
+
+10. LlamaIndex.TS
+    - TypeScript version of LlamaIndex
+    - For JavaScript/Node.js applications
+    - npm: @llamaindex/core
+    - Cost: Free (open source)

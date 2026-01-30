@@ -1,0 +1,86 @@
+LlamaIndex Support and Documentation
+
+GETTING STARTED
+
+Quick Start Guide:
+1. Install LlamaIndex: pip install llama-index
+2. Set your API key: export OPENAI_API_KEY=your-key
+3. Create a simple index:
+   from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+   documents = SimpleDirectoryReader("data").load_data()
+   index = VectorStoreIndex.from_documents(documents)
+   query_engine = index.as_query_engine()
+   response = query_engine.query("Your question here")
+
+DOCUMENTATION RESOURCES
+
+- Official Documentation: docs.llamaindex.ai
+- API Reference: docs.llamaindex.ai/api_reference
+- GitHub Repository: github.com/run-llama/llama_index
+- Discord Community: discord.gg/dGcwcsnxhU
+- Twitter/X: @llama_index
+
+COMMON TROUBLESHOOTING
+
+Issue: "No module named 'llama_index'"
+Solution:
+1. Ensure you've installed llama-index: pip install llama-index
+2. Check your Python environment is activated
+3. Verify installation: pip show llama-index
+
+Issue: "OpenAI API key not found"
+Solution:
+1. Set environment variable: export OPENAI_API_KEY=your-key
+2. Or pass directly: llm = OpenAI(api_key="your-key")
+3. Or use .env file with python-dotenv
+
+Issue: "Rate limit exceeded"
+Solution:
+1. Add retry logic with exponential backoff
+2. Reduce batch size for indexing
+3. Use a smaller/faster model for development
+4. Upgrade your API plan
+
+Issue: "Out of memory when indexing"
+Solution:
+1. Use batch indexing: index.insert_nodes(nodes, batch_size=100)
+2. Use a streaming approach for large documents
+3. Reduce chunk size in text splitter
+4. Use a more efficient embedding model
+
+SUPPORT TIERS
+
+Community Support (Free):
+- GitHub Issues for bug reports
+- Discord community for questions
+- Stack Overflow tag: llamaindex
+
+Enterprise Support:
+- Contact: enterprise@llamaindex.ai
+- SLA-backed response times
+- Dedicated support engineer
+- Custom integrations
+
+TUTORIALS AND EXAMPLES
+
+Beginner Tutorials:
+- Building a Simple Q&A Bot
+- Document Summarization
+- Chat with Your Data
+
+Advanced Tutorials:
+- Building Agents with Tools
+- Multi-modal RAG (text + images)
+- Structured Output Extraction
+- Fine-tuning Embeddings
+
+All tutorials available at: docs.llamaindex.ai/examples
+
+VERSION INFORMATION
+
+Current Stable Version: 0.11.x
+Python Support: 3.9, 3.10, 3.11, 3.12
+TypeScript Version: Available as @llamaindex/core
+
+Upgrade Command:
+pip install --upgrade llama-index

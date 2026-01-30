@@ -1,0 +1,50 @@
+LlamaIndex Frequently Asked Questions (FAQ)
+
+Q: What is LlamaIndex?
+A: LlamaIndex is a data framework for building LLM-powered applications. It provides tools to ingest, structure, and access private or domain-specific data for use with large language models. It's designed to help developers build context-augmented LLM applications like chatbots, Q&A systems, and agents.
+
+Q: What are the main features of LlamaIndex?
+A: LlamaIndex offers several key features:
+- Data Connectors: Load data from various sources (APIs, PDFs, databases, etc.)
+- Data Indexes: Structure your data for optimal LLM consumption
+- Query Engines: Natural language interfaces to query your data
+- Chat Engines: Conversational interfaces with memory
+- Agents: LLM-powered autonomous agents that can use tools
+
+Q: How do I install LlamaIndex?
+A: You can install LlamaIndex using pip:
+pip install llama-index
+For specific integrations, install additional packages like:
+pip install llama-index-llms-openai
+pip install llama-index-vector-stores-chroma
+
+Q: What LLM providers does LlamaIndex support?
+A: LlamaIndex supports many LLM providers including:
+- OpenAI (GPT-4, GPT-3.5)
+- Anthropic (Claude)
+- Google (Gemini, PaLM)
+- Cohere
+- Hugging Face models
+- Local models via Ollama
+- Azure OpenAI
+- AWS Bedrock
+
+Q: What vector stores does LlamaIndex support?
+A: LlamaIndex integrates with numerous vector stores:
+- Chroma
+- Pinecone
+- Weaviate
+- Qdrant
+- Milvus
+- FAISS
+- PostgreSQL (pgvector)
+- Elasticsearch
+
+Q: What is RAG (Retrieval-Augmented Generation)?
+A: RAG is a technique that combines retrieval and generation. Instead of relying solely on the LLM's training data, RAG retrieves relevant documents from a knowledge base and includes them in the prompt. This helps the LLM provide more accurate, up-to-date, and verifiable answers.
+
+Q: How does LlamaIndex handle conversation memory?
+A: LlamaIndex provides ChatMemoryBuffer and other memory classes to maintain conversation history. This allows chatbots to remember previous messages and maintain context across multiple turns in a conversation.
+
+Q: Is LlamaIndex free to use?
+A: LlamaIndex is open-source and free to use under the MIT license. However, you'll need API keys for the LLM providers you want to use (like OpenAI or Anthropic), which may have associated costs.
